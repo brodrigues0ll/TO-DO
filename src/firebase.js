@@ -21,20 +21,32 @@ const setFirebaseConfigToLocalStorage = (config) => {
 
 // Função para verificar se a configuração do Firebase está no localStorage
 const isFirebaseConfigInLocalStorage = () => {
+  if (typeof window === "undefined") {
+    return false; // Retorna false se não estiver no navegador
+  }
   return localStorage.getItem("firebaseConfig") !== null;
 };
 
 // Função para inicializar o Firebase com a configuração armazenada ou fornecida
 const initializeFirebaseApp = () => {
-  const storedConfig = getFirebaseConfigFromLocalStorage();
-  const firebaseConfig = storedConfig || {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  };
+  let firebaseConfig = getFirebaseConfigFromLocalStorage();
+
+  // Se não houver configuração no localStorage, pedir ao usuário para inserir manualmente
+  if (!firebaseConfig) {
+    if (typeof window !== "undefined") {
+      firebaseConfig = prompt(
+        "Insira a configuração do Firebase (JSON format)"
+      );
+      if (firebaseConfig) {
+        setFirebaseConfigToLocalStorage(firebaseConfig);
+        firebaseConfig = JSON.parse(firebaseConfig);
+      } else {
+        throw new Error("Configuração do Firebase não fornecida.");
+      }
+    } else {
+      throw new Error("Configuração do Firebase não fornecida.");
+    }
+  }
 
   const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
   return { app, firebaseConfig };

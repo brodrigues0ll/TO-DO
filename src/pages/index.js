@@ -43,7 +43,7 @@ export default function Home() {
       return () => unsubscribe();
     };
 
-    if (!firebaseConfigSet) {
+    if (!firebaseConfigSet || firebaseConfigSet === null) {
       const userConfig = prompt("Digite a configuração do Firebase (JSON)");
       try {
         const configObject = JSON.parse(userConfig);
