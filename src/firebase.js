@@ -21,9 +21,6 @@ const setFirebaseConfigToLocalStorage = (config) => {
 
 // Função para verificar se a configuração do Firebase está no localStorage
 const isFirebaseConfigInLocalStorage = () => {
-  if (typeof window === "undefined") {
-    return false; // Retorna false se não estiver no navegador
-  }
   return localStorage.getItem("firebaseConfig") !== null;
 };
 
