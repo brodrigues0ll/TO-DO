@@ -1,21 +1,16 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
-import {
-  db,
-  isFirebaseConfigInLocalStorage,
-  setFirebaseConfigToLocalStorage,
-} from "../firebase";
+import { initializeFirebaseApp } from "../firebase";
 import MainTask from "@/components/MainTask";
 import moment from "moment-timezone";
 
 export default function Home() {
   const [tasks, setTasks] = useState([]);
-  const [firebaseConfigSet, setFirebaseConfigSet] = useState(
-    isFirebaseConfigInLocalStorage()
-  );
 
   useEffect(() => {
-    const fetchTasks = async () => {
+    const { db } = initializeFirebaseApp();
+
+    if (db) {
       const tasksCollection = collection(db, "tasks");
 
       const unsubscribe = onSnapshot(
@@ -41,21 +36,8 @@ export default function Home() {
 
       // Cleanup subscription on unmount
       return () => unsubscribe();
-    };
-
-    if (!firebaseConfigSet || firebaseConfigSet === null) {
-      const userConfig = prompt("Digite a configuração do Firebase (JSON)");
-      try {
-        const configObject = JSON.parse(userConfig);
-        setFirebaseConfigToLocalStorage(configObject);
-        setFirebaseConfigSet(true);
-      } catch (error) {
-        console.error("Configuração inválida do Firebase:", error);
-      }
     }
-
-    fetchTasks();
-  }, [firebaseConfigSet]);
+  }, []);
 
   return (
     <div>

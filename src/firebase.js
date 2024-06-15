@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
@@ -31,37 +30,31 @@ const isFirebaseConfigInLocalStorage = () => {
 const initializeFirebaseApp = () => {
   let firebaseConfig = getFirebaseConfigFromLocalStorage();
 
-  // Se não houver configuração no localStorage, pedir ao usuário para inserir manualmente
   if (!firebaseConfig) {
-    if (typeof window !== "undefined") {
-      firebaseConfig = prompt(
-        "Insira a configuração do Firebase (JSON format)"
-      );
-      if (firebaseConfig) {
+    // Configuração não encontrada no localStorage, solicita ao usuário
+    let configInput = prompt("Insira a configuração do Firebase (JSON format)");
+    if (configInput) {
+      try {
+        firebaseConfig = JSON.parse(configInput);
         setFirebaseConfigToLocalStorage(firebaseConfig);
-        firebaseConfig = JSON.parse(firebaseConfig);
-      } else {
-        throw new Error("Configuração do Firebase não fornecida.");
+      } catch (error) {
+        console.error("Erro ao analisar configuração do Firebase: ", error);
+        firebaseConfig = null;
       }
     } else {
-      throw new Error("Configuração do Firebase não fornecida.");
+      console.error("Configuração do Firebase não fornecida!");
+      return null;
     }
   }
 
+  // Inicializa o Firebase se a configuração estiver disponível
   const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
-  return { app, firebaseConfig };
+  const db = getFirestore(app);
+
+  return { app, db, firebaseConfig };
 };
 
-// Inicializa o Firebase e exporta a instância do Firestore
-let db;
-if (typeof window !== "undefined") {
-  const { app } = initializeFirebaseApp();
-  db = getFirestore(app);
-}
-
-// Exporta a instância do Firebase e o Firestore
 export {
-  db,
   initializeFirebaseApp,
   isFirebaseConfigInLocalStorage,
   setFirebaseConfigToLocalStorage,
