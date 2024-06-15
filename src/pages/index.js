@@ -25,7 +25,7 @@ export default function Home() {
           }));
 
           // Ordenar as tarefas por createdAt
-          tasksList.sort((b, a) => b.createdAt - a.createdAt);
+          tasksList.sort((a, b) => a.createdAt - b.createdAt);
 
           setTasks(tasksList);
         },

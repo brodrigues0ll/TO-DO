@@ -28,11 +28,17 @@ const isFirebaseConfigInLocalStorage = () => {
 
 // Função para inicializar o Firebase com a configuração armazenada ou fornecida
 const initializeFirebaseApp = () => {
+  if (typeof window === "undefined") {
+    return null; // Retorna null se não estiver no navegador
+  }
+
   let firebaseConfig = getFirebaseConfigFromLocalStorage();
 
   if (!firebaseConfig) {
     // Configuração não encontrada no localStorage, solicita ao usuário
-    let configInput = prompt("Insira a configuração do Firebase (JSON format)");
+    let configInput = window.prompt(
+      "Insira a configuração do Firebase (JSON format)"
+    );
     if (configInput) {
       try {
         firebaseConfig = JSON.parse(configInput);
@@ -53,6 +59,10 @@ const initializeFirebaseApp = () => {
 
   return { app, db, firebaseConfig };
 };
+
+const firebaseInstance = initializeFirebaseApp();
+
+export const db = firebaseInstance ? firebaseInstance.db : null;
 
 export {
   initializeFirebaseApp,

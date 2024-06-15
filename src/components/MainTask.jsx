@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useMemo } from "react";
 import {
   ChevronDown,
   ChevronRight,
@@ -6,7 +7,6 @@ import {
   CornerDownRight,
   Trash2,
 } from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 import Subtask from "./SubTask";
@@ -31,6 +31,11 @@ const MainTask = ({ task }) => {
   };
 
   const deleteTask = async () => {
+    if (!db) {
+      console.error("Firestore instance is not initialized.");
+      return;
+    }
+
     try {
       await deleteDoc(doc(db, "tasks", task.id));
       console.log("Tarefa excluída com sucesso!");
@@ -48,6 +53,11 @@ const MainTask = ({ task }) => {
   };
 
   const toggleStatus = async () => {
+    if (!db) {
+      console.error("Firestore instance is not initialized.");
+      return;
+    }
+
     try {
       setIsUpdating(true); // Indica que a atualização está em progresso
 
