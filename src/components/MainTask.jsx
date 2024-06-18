@@ -64,11 +64,11 @@ const MainTask = ({ task }) => {
       // Determina o novo status invertendo o atual
       const newStatus = mainTaskStatus === "done" ? "undone" : "done";
 
+      // Atualiza o estado local para refletir a mudança imediatamente
+      setMainTaskStatus(newStatus);
+
       // Atualiza o status no Firestore
       await updateDoc(doc(db, "tasks", task.id), { status: newStatus });
-
-      // Atualiza o estado local para refletir a mudança
-      setMainTaskStatus(newStatus);
 
       setIsUpdating(false); // Indica que a atualização foi concluída
     } catch (error) {

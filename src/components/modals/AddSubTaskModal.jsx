@@ -8,6 +8,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/firebase";
 import moment from "moment-timezone";
+import { v4 as uuidv4 } from "uuid";
 
 const AddSubTaskModal = ({ isModalOpen, closeModal, maintaskId }) => {
   const [taskTitle, setTaskTitle] = useState("");
@@ -21,6 +22,7 @@ const AddSubTaskModal = ({ isModalOpen, closeModal, maintaskId }) => {
     try {
       // Adicionar a subtarefa à coleção de subtarefas no Firestore
       const subTaskData = {
+        id: uuidv4(),
         title: taskTitle,
         status: "undone",
         createdAt: moment.tz("America/Sao_Paulo").format(),

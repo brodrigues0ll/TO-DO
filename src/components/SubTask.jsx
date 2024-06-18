@@ -1,11 +1,5 @@
 import { Circle, CircleCheckBig } from "lucide-react";
-import {
-  updateDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
+import { updateDoc, doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 import { useState, useEffect } from "react";
 
@@ -14,61 +8,61 @@ const Subtask = ({ subtask, maintaskId }) => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    setStatus(subtask.status); // Atualiza o estado inicial com o status da subtarefa
+    setStatus(subtask.status);
   }, [subtask.status]);
 
   const toggleStatus = async () => {
     try {
-      setIsUpdating(true); // Define que a atualização está em progresso
+      setIsUpdating(true); // Indica que a atualização está em progresso
 
-      const subtasksRef = collection(db, `tasks/${maintaskId}/subtasks`);
-      const q = query(subtasksRef, where("title", "==", subtask.title));
-      const querySnapshot = await getDocs(q);
+      // Determina o novo status invertendo o atual
+      const newStatus = status === "done" ? "undone" : "done";
 
-      querySnapshot.forEach(async (doc) => {
-        const currentStatus = doc.data().status;
-        const newStatus = currentStatus === "done" ? "undone" : "done";
+      // Atualiza o estado local para refletir a mudança imediatamente
+      setStatus(newStatus);
 
-        setStatus(newStatus); // Atualiza o estado local imediatamente
+      // Referência ao documento da main task
+      const mainTaskDocRef = doc(db, "tasks", maintaskId);
+      const mainTaskDoc = await getDoc(mainTaskDocRef);
 
-        await updateDoc(doc.ref, { status: newStatus });
-      });
+      if (mainTaskDoc.exists()) {
+        const mainTaskData = mainTaskDoc.data();
+        const updatedSubtasks = mainTaskData.subtasks.map((st) =>
+          st.id === subtask.id ? { ...st, status: newStatus } : st
+        );
 
-      setIsUpdating(false); // Define que a atualização foi concluída
+        // Atualiza o documento da main task com o array de subtasks modificado
+        await updateDoc(mainTaskDocRef, { subtasks: updatedSubtasks });
+
+        setIsUpdating(false); // Indica que a atualização foi concluída
+      } else {
+        console.error("Main task não encontrada.");
+        setIsUpdating(false); // Garante que isUpdating seja false em caso de erro
+      }
     } catch (error) {
-      setIsUpdating(false); // Define que a atualização foi concluída mesmo em caso de erro
       console.error("Erro ao atualizar status da subtarefa: ", error);
+      setIsUpdating(false); // Garante que isUpdating seja false em caso de erro
     }
   };
 
   return (
-    <>
-      <div className="pb-3 ml-8 flex items-center">
-        {status === "done" ? (
-          <CircleCheckBig
-            className={`h-5 w-5 mr-2 text-blue-500 cursor-pointer ${
-              isUpdating ? "opacity-50" : ""
-            }`}
-            onClick={toggleStatus}
-          />
-        ) : (
-          <Circle
-            className={`h-5 w-5 mr-2 cursor-pointer ${
-              isUpdating ? "opacity-50" : ""
-            }`}
-            onClick={toggleStatus}
-          />
-        )}
+    <div className="pb-3 ml-8 flex items-center">
+      {status === "done" ? (
+        <CircleCheckBig
+          className="h-5 w-5 mr-2 text-blue-500 cursor-pointer"
+          onClick={toggleStatus}
+        />
+      ) : (
+        <Circle
+          className="h-5 w-5 mr-2 cursor-pointer"
+          onClick={toggleStatus}
+        />
+      )}
 
-        <h3
-          className={`text-lg ${
-            subtask.status === "done" ? "line-through" : ""
-          }`}
-        >
-          {subtask.title}
-        </h3>
-      </div>
-    </>
+      <h3 className={`text-lg ${status === "done" ? "line-through" : ""}`}>
+        {subtask.title}
+      </h3>
+    </div>
   );
 };
 
