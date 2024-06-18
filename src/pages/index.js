@@ -40,7 +40,12 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
+    <div
+      className="overflow-scroll pb-14"
+      style={{
+        height: "calc(100vh - 6rem)",
+      }}
+    >
       {tasks.map((task) => (
         <MainTask key={task.id} task={task} />
       ))}

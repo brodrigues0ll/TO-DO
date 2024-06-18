@@ -72,7 +72,7 @@ const MainTask = ({ task }) => {
 
   return (
     <>
-      <div key={task.id} className="px-5 py-2 mt-5">
+      <div key={task.id} className="px-5 py-2 mt-5 ">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             {mainTaskStatus === "done" ? (
