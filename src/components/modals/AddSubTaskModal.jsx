@@ -50,7 +50,10 @@ const AddSubTaskModal = ({ isModalOpen, closeModal, maintaskId }) => {
   return (
     <div className={`${isModalOpen ? "block" : "hidden"}`}>
       <div className="flex justify-center items-center">
-        <div className="absolute z-10 h-screen w-screen bg-black opacity-50 top-0 flex justify-center" />
+        <div
+          className="absolute z-10 h-screen w-screen bg-black opacity-50 top-0 flex justify-center"
+          onClick={closeModal}
+        />
         <div className="bg-zinc-900 flex justify-center items-center absolute top-32 rounded flex-col gap-5 py-5 z-20 w-4/5">
           <h1>Adicionar Subtarefa</h1>
           <input
