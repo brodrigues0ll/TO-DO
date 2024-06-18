@@ -68,7 +68,7 @@ const Subtask = ({ subtask, maintaskId }) => {
 
   return (
     <>
-      <div className="pb-3 ml-8 flex items-center">
+      <div className="pb-3 ml-8 flex items-center ">
         {status === "done" ? (
           <CircleCheckBig
             className="h-5 w-5 mr-2 text-blue-500 cursor-pointer"
@@ -81,8 +81,12 @@ const Subtask = ({ subtask, maintaskId }) => {
           />
         )}
 
-        <div className="flex w-full justify-between">
-          <h3 className={`text-lg ${status === "done" ? "line-through" : ""}`}>
+        <div className="flex w-full justify-between items-center">
+          <h3
+            className={`text-lg ${
+              status === "done" ? "line-through" : ""
+            }  max-w-[85%]`}
+          >
             {title}
           </h3>
           <FilePen
