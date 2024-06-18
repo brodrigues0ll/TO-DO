@@ -33,9 +33,11 @@ export const AddTaskModal = ({ isOpen, closeModal }) => {
         onClick={closeModal}
       />
       <div className="bg-zinc-900 flex justify-center items-center absolute top-32 rounded flex-col gap-5 py-5 z-20 w-4/5">
-        <h1>Adicionar nova Tarefa</h1>
+        <div className="bg-blue-600 w-full absolute top-0 text-center rounded-t py-2">
+          <h1>Adicionar nova Tarefa</h1>
+        </div>
         <input
-          className="appearance-none bg-transparent w-4/5 text-zinc-100 py-1 px-2 leading-tight focus:outline-none text-2xl border-b-2 border-blue-500"
+          className="appearance-none bg-transparent w-4/5 text-zinc-100 py-1 px-2 leading-tight focus:outline-none text-2xl border-b-2 border-blue-500 mt-16"
           type="text"
           placeholder="Tarefa"
           aria-label="Tarefa"

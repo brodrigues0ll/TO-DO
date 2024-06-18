@@ -20,7 +20,6 @@ const MainTask = ({ task }) => {
   });
   const [mainTaskStatus, setMainTaskStatus] = useState(task.status);
   const [isOpenSubtaskModal, setIsOpenSubtaskModal] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     localStorage.setItem(taskKey, JSON.stringify(isCollapsed));
@@ -38,7 +37,6 @@ const MainTask = ({ task }) => {
 
     try {
       await deleteDoc(doc(db, "tasks", task.id));
-      console.log("Tarefa excluída com sucesso!");
     } catch (error) {
       console.error("Erro ao excluir tarefa: ", error);
     }
@@ -59,8 +57,6 @@ const MainTask = ({ task }) => {
     }
 
     try {
-      setIsUpdating(true); // Indica que a atualização está em progresso
-
       // Determina o novo status invertendo o atual
       const newStatus = mainTaskStatus === "done" ? "undone" : "done";
 
@@ -69,11 +65,8 @@ const MainTask = ({ task }) => {
 
       // Atualiza o status no Firestore
       await updateDoc(doc(db, "tasks", task.id), { status: newStatus });
-
-      setIsUpdating(false); // Indica que a atualização foi concluída
     } catch (error) {
       console.error("Erro ao atualizar status da tarefa: ", error);
-      setIsUpdating(false); // Garante que isUpdating seja false em caso de erro
     }
   };
 

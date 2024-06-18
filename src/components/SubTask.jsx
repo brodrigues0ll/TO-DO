@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 
 const Subtask = ({ subtask, maintaskId }) => {
   const [status, setStatus] = useState(subtask.status);
-  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     setStatus(subtask.status);
@@ -13,8 +12,6 @@ const Subtask = ({ subtask, maintaskId }) => {
 
   const toggleStatus = async () => {
     try {
-      setIsUpdating(true); // Indica que a atualização está em progresso
-
       // Determina o novo status invertendo o atual
       const newStatus = status === "done" ? "undone" : "done";
 
@@ -33,15 +30,11 @@ const Subtask = ({ subtask, maintaskId }) => {
 
         // Atualiza o documento da main task com o array de subtasks modificado
         await updateDoc(mainTaskDocRef, { subtasks: updatedSubtasks });
-
-        setIsUpdating(false); // Indica que a atualização foi concluída
       } else {
         console.error("Main task não encontrada.");
-        setIsUpdating(false); // Garante que isUpdating seja false em caso de erro
       }
     } catch (error) {
       console.error("Erro ao atualizar status da subtarefa: ", error);
-      setIsUpdating(false); // Garante que isUpdating seja false em caso de erro
     }
   };
 
