@@ -60,7 +60,11 @@ const Subtask = ({ subtask, maintaskId }) => {
           />
         )}
 
-        <h3 className={`text-lg ${status === "done" ? "line-through" : ""}`}>
+        <h3
+          className={`text-lg ${
+            subtask.status === "done" ? "line-through" : ""
+          }`}
+        >
           {subtask.title}
         </h3>
       </div>
