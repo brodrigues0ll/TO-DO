@@ -27,7 +27,7 @@ export const AddTaskModal = ({ isOpen, closeModal }) => {
   };
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center fixed w-full h-full top-0">
       <div
         className="absolute z-10 h-screen w-screen bg-black opacity-50 top-0 flex justify-center"
         onClick={closeModal}
